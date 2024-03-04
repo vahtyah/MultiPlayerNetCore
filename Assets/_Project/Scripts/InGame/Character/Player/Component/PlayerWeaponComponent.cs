@@ -13,6 +13,11 @@ public class PlayerWeaponComponent
         weapon = Object.Instantiate(weaponPrefab, player.GetRightHand()).GetComponent<IWeapon>();
     }
 
+    public void SetWeapon(Weapon weapon)
+    {
+        this.weapon = weapon.GetComponent<IWeapon>();
+    }
+
     public void Shoot()
     {
         if (weapon.CanShoot())

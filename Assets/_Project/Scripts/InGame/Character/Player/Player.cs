@@ -1,19 +1,31 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Player : SerializedMonoBehaviour
+public class Player : NetworkBehaviour
 {
     [BoxGroup("Components")]
-    [SerializeField] private Rigidbody rb;
+    [SerializeField]
+    private Rigidbody rb;
+
     [BoxGroup("Components")]
-    [SerializeField] private Animator anim;
+    [SerializeField]
+    private Animator anim;
+
     [BoxGroup("Components")]
-    [SerializeField] private LayerMask groundMask;
-   
+    [SerializeField]
+    private LayerMask groundMask;
+
     [BoxGroup("Weapon Settings")]
-    [SerializeField] private Transform rightHand;
+    [SerializeField]
+    private Transform rightHand;
+
+    [BoxGroup("Weapon Settings")]
+    [SerializeField]
+    private Weapon weapon;
     
+
     public PlayerAnimationComponent Animation { get; private set; }
     public PlayerMovementComponent Movement { get; private set; }
     public PlayerStateComponent State { get; private set; }
@@ -26,17 +38,23 @@ public class Player : SerializedMonoBehaviour
         Movement = new PlayerMovementComponent(this);
         State = new PlayerStateComponent(this);
         Weapon = new PlayerWeaponComponent(this);
-        Weapon.SetWeapon(WeaponType.ScarL);
+        Weapon.SetWeapon(weapon);
     }
 
     private void Update()
     {
-        State.Update();
+        if (IsOwner)
+        {
+            State.Update();
+            if(weapon.CanShoot())
+                weapon.Shoot();
+        }
     }
-    
+
     private void FixedUpdate()
     {
-        State.FixedUpdate();
+        if (IsOwner)
+            State.FixedUpdate();
     }
 
     public Rigidbody GetRb() => rb;
