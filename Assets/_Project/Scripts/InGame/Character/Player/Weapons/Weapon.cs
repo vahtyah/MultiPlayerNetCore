@@ -26,26 +26,14 @@ public class Weapon : NetworkBehaviour, IWeapon
     {
         muzzle.Play();
         cooldownTimer.Reset();
-        if (IsServer)
-        {
-            SpawnBullet();
-        }
-        else
-        {
-            ShootServerRpc();
-        }
+        SpawnBulletServerRPC();
     }
-    
+
     [ServerRpc]
-    void ShootServerRpc()
+    void SpawnBulletServerRPC()
     {
-        SpawnBullet();
-    }
-    
-    private void SpawnBullet()
-    {
-        var bulletObj = Instantiate(bulletPrefab, shootPos.position, Quaternion.identity);
-        bulletObj.GetComponent<Projectile>().LookAt(InGameManager.Instance.GetReticle().position);
+        var bulletObj = Instantiate(bulletPrefab);
+        bulletObj.GetComponent<Projectile>().SetPosition(shootPos.position).LookAt(InGameManager.Instance.GetReticle().position);
         bulletObj.GetComponent<NetworkObject>().Spawn();
     }
 }

@@ -4,42 +4,23 @@ using UnityEngine;
 
 public class Projectile : NetworkBehaviour
 {
-    [SerializeField] private Rigidbody rb;
     [SerializeField] private float speed;
     private CountdownTimer countdownTimer;
     protected ProjectileTypes projectileType;
 
     protected void Awake()
     {
-        rb.isKinematic = false;
         countdownTimer = new CountdownTimer(3f);
+        countdownTimer.Start();
     }
 
-    protected virtual void OnEnable()
+    private void Update()
     {
-        countdownTimer.Reset();
-    }
-
-    protected virtual void Update()
-    {
-        rb.velocity = transform.forward * speed;
+        if(!IsServer) return;
+        transform.Translate(Vector3.forward * (speed * Time.deltaTime));
         countdownTimer.Tick(Time.deltaTime);
-        if (countdownTimer.IsFinished)
+        if (countdownTimer.IsFinished && IsOwner)
         {
-            RequestDespawn();
-        }
-    }
-    
-    private void RequestDespawn()
-    {
-        if (IsServer)
-        {
-            // Despawn the projectile directly if we're on the server
-            Despawn();
-        }
-        else
-        {
-            // If we're a client, request the server to despawn the projectile
             RequestDespawnServerRpc();
         }
     }
@@ -47,12 +28,6 @@ public class Projectile : NetworkBehaviour
     [ServerRpc]
     private void RequestDespawnServerRpc()
     {
-        Despawn();
-    }
-
-    private void Despawn()
-    {
-        // Despawn the network object
         GetComponent<NetworkObject>().Despawn(destroy: true);
     }
     

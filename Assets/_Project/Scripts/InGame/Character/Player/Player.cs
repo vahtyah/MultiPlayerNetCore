@@ -44,11 +44,7 @@ public class Player : NetworkBehaviour
     private void Update()
     {
         if (IsOwner)
-        {
             State.Update();
-            if(weapon.CanShoot())
-                weapon.Shoot();
-        }
     }
 
     private void FixedUpdate()
