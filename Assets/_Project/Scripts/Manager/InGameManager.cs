@@ -23,9 +23,7 @@ public class GameStateEvent : UnityEvent<GameState>
 
 public class InGameManager : Singleton<InGameManager>
 {
-    [SerializeField, BoxGroup("Props")] private Player player;
     [SerializeField, BoxGroup("Props")] private Transform reticle;
-    public Player GetPlayer() => player;
     public Transform GetReticle() => reticle;
     [SerializeField] GameStateEvent onGameStateChanged;
     private GameState gameState;

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -7,16 +8,20 @@ public class CameraController : MonoBehaviour
     //[SerializeField] float smoothTime;
     //Vector3 curVelo;
     Vector3 offset;
-    // Start is called before the first frame update
-    void Start()
+
+    private Transform playerPos;
+    private bool isPlayerPosSet = false;
+
+    private void Start()
     {
-        // offset = transform.position - playerTransform.position;
+        offset = transform.position - playerPos.position;
     }
 
     private void LateUpdate()
     {
-        // Vector3 targetPos = playerTransform.position + offset;
-        // transform.position = targetPos;
+        if(!isPlayerPosSet) return;
+        Vector3 targetPos = playerPos.position + offset;
+        transform.position = targetPos;
         //transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref curVelo, smoothTime, Mathf.Infinity, Time.deltaTime) ;
     }
 }

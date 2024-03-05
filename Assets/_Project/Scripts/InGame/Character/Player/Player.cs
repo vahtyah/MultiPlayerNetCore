@@ -41,6 +41,11 @@ public class Player : NetworkBehaviour
         Weapon.SetWeapon(weapon);
     }
 
+    private void Start()
+    {
+        
+    }
+
     private void Update()
     {
         if (IsOwner)
